@@ -52,8 +52,14 @@ class Whisper(WhisperConfig):
         logger.info(f"Device: {self.device}")
 
         # Load model
-        model_path = f"{kwargs['model_root']}/{model_name}.pt"
-        self.whisper_model = whisper.load_model(model_path, device=self.device) # type: ignore
+        model_root = kwargs.get("model_root", "tiny")
+        print (kwargs)
+        if model_name == model_root:
+            model_path = model_name
+        else:
+            model_path = f"{model_root}/{model_name}.pt"
+        print (f"Loading model: {model_path}")
+        self.whisper_model = whisper.load_model(model_path) # type: ignore
         logger.info(f"Model loaded: {model_name}")
 
         # 모델을 FP32로 변환

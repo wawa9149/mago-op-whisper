@@ -1,7 +1,7 @@
 # Whisper configuration file
 
-model_root: models/mstudio/speech_recognition/whisper
-model_name: large-v3
+model_root: tiny
+model_name: tiny
 out_dir: exp/whisper
 nocuda: true
 lang: ko

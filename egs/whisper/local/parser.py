@@ -76,7 +76,7 @@ def get_parser() -> argparse.ArgumentParser:
         '--model-root', '--model_root',
         dest='model_root',
         type=str,
-        default='models/mstudio/speech_recognition/whisper',
+        default='tiny',
         help='Model root directory'
     )
 

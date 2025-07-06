@@ -4,11 +4,11 @@
 # AUTHORS
 # Sukbong Kwon (Galois)
 
-model_root=models/mstudio/speech_recognition/whisper
+model_root=tiny
 model_name=tiny
 out_dir=exp/whisper
-nocuda=false
-num_gpu=
+nocuda=true
+n_gpu=
 lang=ko
 task=transcribe
 
@@ -43,8 +43,8 @@ fi
 
 # Set CUDA_VISIBLE_DEVICES
 cuda_visible_devices=""
-if [ ! -z ${num_gpu} ]; then
-  cuda_visible_devices="CUDA_VISIBLE_DEVICES=${num_gpu}"
+if [ ! -z ${n_gpu} ]; then
+  cuda_visible_devices="CUDA_VISIBLE_DEVICES=${n_gpu}"
 fi
 
 # Run transcribe
