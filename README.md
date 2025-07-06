@@ -61,3 +61,18 @@ cd egs/whisper
 
 Docker 이미지를 빌드하고 실행합니다.
 
+### Build
+
+```bash
+docker compose build
+```
+
+### Run
+
+```bash
+docker compose up -d
+```
+
+### Test
+
+- [Service URL](http://localhost:9005/whisper/v1/run)
