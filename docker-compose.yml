@@ -1,0 +1,19 @@
+services:
+   test-whisper:
+    image: test-whisper
+    container_name:  test-whisper
+    runtime: nvidia
+    environment:
+      - LC_ALL=C.UTF-8
+    build:
+      context: .
+      dockerfile: Dockerfile
+    stdin_open: true
+    tty: true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    cap_add:
+      - SYS_ADMIN
+    ports:
+      - 9005:59005
+    entrypoint: ["bash", "./scripts/run_app.sh"]

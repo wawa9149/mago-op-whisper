@@ -23,7 +23,7 @@ app = FastAPI(
     docs_url=f"/{APP_SYMBOL}/docs",
     openapi_url=f"/{APP_SYMBOL}/openapi.json",
     servers=[
-        {"url": "https://api.magovoice.com", "description": "Production"},
+        {"url": "http://localhost:9005", "description": "Local"},
     ]
 )
 
@@ -35,8 +35,8 @@ if __name__ == "__main__":
     uvicorn.run(
         "app:app",
         host="0.0.0.0",
-        port=59110,
-        # workers=2,
+        port=59005,
+        workers=2,
         reload=False,
         log_level="debug",
     )
