@@ -1,0 +1,7 @@
+requests
+pydantic
+PyYAML>=6.0
+aiofiles
+fastapi
+python-multipart
+uvicorn

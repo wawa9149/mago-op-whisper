@@ -1,0 +1,8 @@
+# Whisper configuration file
+
+model_root: models/mstudio/speech_recognition/whisper
+model_name: large-v3
+out_dir: exp/whisper
+nocuda: true
+lang: ko
+task: transcribe
