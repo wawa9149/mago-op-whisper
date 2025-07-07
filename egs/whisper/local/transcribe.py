@@ -87,6 +87,7 @@ class Whisper(WhisperConfig):
     def __call__(
         self,
         audio_path: str,
+        content_id: str = "",
         out_dir: str = "",
         task: str = "",
         lang: str = "",

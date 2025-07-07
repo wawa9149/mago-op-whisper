@@ -8,8 +8,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 API_TOKENS = [
-    "eadc5d8d-ahno-9559-yesa-8c053e0f1f69",
-    "b19b0332-udua-4534-pjr1-ddc17a898f4d",
+    "token-temp",
 ]
 
 auth_scheme = HTTPBearer()

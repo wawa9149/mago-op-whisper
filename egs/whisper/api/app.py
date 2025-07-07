@@ -10,7 +10,6 @@ import uvicorn
 from api.route import router
 from api.config import APP_NAME, DESCRIPTION, VERSION, COMPANY, CONTACT, APP_SYMBOL
 
-
 # Initialize FastAPI
 app = FastAPI(
     title=APP_NAME,
@@ -20,23 +19,29 @@ app = FastAPI(
         "name": COMPANY,
         "email": CONTACT,
     },
-    docs_url=f"/{APP_SYMBOL}/docs",
     openapi_url=f"/{APP_SYMBOL}/openapi.json",
-    servers=[
-        {"url": "http://localhost:9005", "description": "Local"},
-    ]
 )
 
 # Include router
 app.include_router(router)
+
+
+from fastapi.middleware.cors import CORSMiddleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*'],
+)
 
 # Run server
 if __name__ == "__main__":
     uvicorn.run(
         "app:app",
         host="0.0.0.0",
-        port=59005,
-        workers=2,
-        reload=False,
+        port=9009,
+        workers=1,
+        reload=True,
         log_level="debug",
     )
