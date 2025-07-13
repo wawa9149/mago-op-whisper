@@ -19,13 +19,15 @@ app = FastAPI(
         "name": COMPANY,
         "email": CONTACT,
     },
-    openapi_url=f"/{APP_SYMBOL}/openapi.json",
+    root_path=f"/{APP_SYMBOL}",
+    docs_url=f"/docs",
+    openapi_url=f"/openapi.json",
 )
 
 # Include router
 app.include_router(router)
 
-
+# CORS to allow all origins
 from fastapi.middleware.cors import CORSMiddleware
 app.add_middleware(
     CORSMiddleware,
@@ -40,7 +42,7 @@ if __name__ == "__main__":
     uvicorn.run(
         "app:app",
         host="0.0.0.0",
-        port=9009,
+        port=59005,
         workers=1,
         reload=True,
         log_level="debug",

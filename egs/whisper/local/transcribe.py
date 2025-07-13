@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 # encoding: utf-8
-# Copyright (c) 2024- SATURN
+# Copyright (c) 2025- SATURN
 # AUTHORS:
 # Sukbong Kwon (Galois)
 
 import yaml
 import torch
 import whisper
+import uuid
 from pathlib import Path
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Any, Dict
 
 # Saturn2
@@ -18,17 +19,33 @@ from saturn2.helper.decorators import decoding_time_decorator
 
 # Local
 from local.utils import result2srt, result2vtt, result2json, result2script
+from local.langmap import whisper_supported_languages
 
 # Define
 logger = get_logger(__name__, level="INFO")
 
 class WhisperConfig(BaseModel):
     whisper_model: Any = None
-    device: str = "cuda" if torch.cuda.is_available() else "cpu"
-    out_dir: str = "exp"
-    lang: str = "en"
-    task: str = "transcribe"
-    decoding_options: Dict = {}
+    device: str = Field(
+        default="cuda" if torch.cuda.is_available() else "cpu",
+        description="Device to use for the model",
+    )
+    out_dir: str = Field(
+        default="exp",
+        description="Output directory to save processed files",
+    )
+    lang: str = Field(
+        default="auto",
+        description="Language to use for the model",
+    )
+    task: str = Field(
+        default="transcribe",
+        description="Task to perform, transcribe or translate",
+    )
+    decoding_options: Dict = Field(
+        default={},
+        description="Decoding options for the model",
+    )
 
 class Whisper(WhisperConfig):
     """Speech recognition with OpenAI whisper model (`Whisper`)
@@ -51,18 +68,17 @@ class Whisper(WhisperConfig):
         self.device = "cuda" if torch.cuda.is_available() and not nocuda else "cpu"
         logger.info(f"Device: {self.device}")
 
-        # Load model
-        model_root = kwargs.get("model_root", "tiny")
-        print (kwargs)
-        if model_name == model_root:
+        # Check if model_root is provided
+        model_root = kwargs.get("model_root", "")
+        if model_root == "":
             model_path = model_name
         else:
             model_path = f"{model_root}/{model_name}.pt"
-        print (f"Loading model: {model_path}")
-        self.whisper_model = whisper.load_model(model_path) # type: ignore
-        logger.info(f"Model loaded: {model_name}")
 
-        # 모델을 FP32로 변환
+        self.whisper_model = whisper.load_model(model_path) # type: ignore
+        logger.info(f"Model loaded: {model_path}")
+
+        # Convert model to FP32 precision if device is CPU
         if self.device == "cpu":
             self.whisper_model = self.whisper_model.to(torch.float32)
             logger.info("Converted Whisper model to FP32 precision")
@@ -96,6 +112,7 @@ class Whisper(WhisperConfig):
 
         Args:
             audio_path (str): Audio file path
+            content_id (str): Content ID
             out_dir (str): Output directory to save temporary files
             task (str, optional): Task name. Defaults to "".
             lang (str, optional): Language code. Defaults to "".
@@ -103,20 +120,31 @@ class Whisper(WhisperConfig):
         logger.info(f"Transcribe audio: {audio_path}")
 
         # Set variables
-        lang = lang if lang else self.lang
+        lang = lang or self.lang
         out_dir = out_dir or self.out_dir
-        task = task if task else self.task
+        task = task or self.task
 
+        # Check if language is supported by whisper
+        if lang not in whisper_supported_languages:
+            raise ValueError(f"Language {lang} is not supported by whisper")
+
+        logger.info(f"Lang: {lang}, Out dir: {out_dir}, Task: {task}")
+
+        # Set task list if task is "all" else set task list to [task]
         task_list = ["transcribe", "translate"] if task == "all" else [task]
         logger.info(f"Running {', '.join(task_list)} on: {audio_path}")
 
         # Get audio info
         result: Dict[str, Any] = {"audio_info": get_audio_info(audio_path)}
 
+        # Set content_id if not provided
+        content_id = content_id or str(uuid.uuid4())
+
         # Transcribe audio (translate is optional)
         for t in task_list:
             result[lang] = self.transcribe(
                 audio_path=audio_path,
+                content_id=content_id,
                 out_dir=out_dir,
                 task=t,
                 lang=lang,
@@ -129,6 +157,7 @@ class Whisper(WhisperConfig):
     def transcribe(
         self,
         audio_path: str,
+        content_id: str,
         out_dir: str,
         task: str,
         lang: str,
@@ -137,6 +166,7 @@ class Whisper(WhisperConfig):
 
         Args:
             audio_path   (str): Path to the audio file.
+            content_id (str): Content ID
             out_dir (str): Base output directory.
             task    (str): 'transcribe' or 'translate'.
             lang    (str): Language code to decode in (e.g. 'ko', 'en', 'fr', ...).
@@ -145,15 +175,23 @@ class Whisper(WhisperConfig):
             Dict: Recognition result
         """
         # SETP 1: Run whisper
-        result = self.whisper_model.transcribe(
-            audio_path,
-            language=lang,
-            task=task,
-            **({} if self.device == "cuda" else {"fp16": False})
-        )
+        # if lang is "auto", using lang detection
+        if lang == "auto":
+            result = self.whisper_model.transcribe(
+                audio_path,
+                task=task,
+                **({} if self.device == "cuda" else {"fp16": False})
+            )
+        else:
+            result = self.whisper_model.transcribe(
+                audio_path,
+                language=lang,
+                task=task,
+                **({} if self.device == "cuda" else {"fp16": False})
+            )
 
         # SETP 2: Prepare language-specific output folder
-        folder = Path(out_dir) / lang
+        folder = Path(out_dir) / lang / content_id
         folder.mkdir(parents=True, exist_ok=True)
 
         # SETP 3: Define the save path
@@ -185,19 +223,20 @@ def main():
     from local.parser import get_parser
     args = get_parser().parse_args()
 
-    app = Whisper.from_config_yaml(
-        config_yaml=args.config,
-    )
+    # app = Whisper.from_config_yaml(
+    #     config_yaml=args.config,
+    # )
 
-    for i in range(1, 2):
-        print (f"Transcribing {i}th file: {args.media}")
-        result = app(
-            args.media,
-            args.out_dir,
-            args.task,
-            args.lang,
-        )
-        print(json.dumps(result, indent=4, ensure_ascii=False))
+    app = Whisper(**vars(args))
+
+    result = app(
+        audio_path=args.media,
+        content_id="",
+        out_dir=args.out_dir,
+        task=args.task,
+        lang=args.lang,
+    )
+    print(json.dumps(result, indent=4, ensure_ascii=False))
 
 if __name__ == '__main__':
     main()

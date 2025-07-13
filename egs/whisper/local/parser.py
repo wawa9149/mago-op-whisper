@@ -53,7 +53,7 @@ def get_parser() -> argparse.ArgumentParser:
         '-m', '--model-name', '--model_name',
         dest='model_name',
         type=str,
-        default='medium',
+        default='tiny',
         help='Model name of whisper, tiny, base, small, medium, large or turbo'
     )
 
@@ -76,7 +76,7 @@ def get_parser() -> argparse.ArgumentParser:
         '--model-root', '--model_root',
         dest='model_root',
         type=str,
-        default='tiny',
+        default="",
         help='Model root directory'
     )
 

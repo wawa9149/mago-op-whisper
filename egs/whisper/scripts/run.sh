@@ -4,7 +4,7 @@
 # AUTHORS
 # Sukbong Kwon (Galois)
 
-model_root=tiny
+model_root=
 model_name=tiny
 out_dir=exp/whisper
 nocuda=true
@@ -41,6 +41,8 @@ if [ ${nocuda} == true ]; then
   options="--nocuda"
 fi
 
+[ ! -z ${model_root} ] && options="--model-root ${model_root}"
+
 # Set CUDA_VISIBLE_DEVICES
 cuda_visible_devices=""
 if [ ! -z ${n_gpu} ]; then
@@ -51,7 +53,6 @@ fi
 eval "${cuda_visible_devices} python local/transcribe.py \
     ${options} \
     --lang ${lang} \
-    --model-root ${model_root} \
     --model-name ${model_name} \
     --out-dir ${out_dir} \
     --task ${task} \

@@ -1,6 +1,6 @@
 # Whisper configuration file
 
-model_root: tiny
+model_root: ""
 model_name: tiny
 out_dir: exp/whisper
 nocuda: true
