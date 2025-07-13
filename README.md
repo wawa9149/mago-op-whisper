@@ -74,7 +74,9 @@ python local/transcribe.py \
 
 ## 배포
 
-Docker 이미지를 빌드하고 실행합니다.
+Docker 이미지를 빌드하고 Container를 실행합니다.
+
+[Docker 사용법](docs/docker.md)
 
 ### Build
 
@@ -88,6 +90,8 @@ docker compose build
 docker compose up -d
 ```
 
-### Test
+### Test URL
+
+실행 환경에 따라 변경해서 사용해 주세요. 아래 주소는 local 환경에서 실행한 경우 입니다.
 
 - [Service URL](http://localhost:9005/whisper/docs)
