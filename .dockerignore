@@ -1,0 +1,47 @@
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Git
+.git/
+.gitignore
+
+# Logs
+*.log
+
+# Tests
+tests/
+coverage/
+*.cover
+*.pyc
+
+# Secrets
+*.env
+.env.*
+secret.*
+*.pem
+*.key
+
+# Docker / Build artifacts
+*.tar
+*.gz
+*.zip
+*.egg-info/
+dist/
+build/
+docker-compose.override.yml
+
+# Loca
+egs/whisper/exp
