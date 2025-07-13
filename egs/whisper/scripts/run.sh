@@ -51,12 +51,11 @@ fi
 
 # Run transcribe
 eval "${cuda_visible_devices} python local/transcribe.py \
+    --model-name ${model_name} \
     ${options} \
     --lang ${lang} \
-    --model-name ${model_name} \
     --out-dir ${out_dir} \
     --task ${task} \
-    --lang ${lang} \
     ${audio} &"
 
 colorful_spinner $!

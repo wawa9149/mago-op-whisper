@@ -7,7 +7,7 @@
 
 오렌지 플래릿 교육 프로그램 코드 w/ [Whisper](https://github.com/openai/whisper.git)
 
-![오렌지플래닛+마고](assets/orange-mago.png)
+![study-group](assets/orange-mago.png)
 
 ## 폴더 구조
 
