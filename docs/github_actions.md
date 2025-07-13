@@ -99,7 +99,12 @@ jobs:
 
 [ci.yml](../.github/workflows/ci.yml) 파일에서 [DockerFile](../Dockerfile)를 가지고 build를 한 다음에 GHCR(GitHub Container Registry)에 push를 합니다.
 
-### 작업진행 상황 확인
+### 작업진행 상황 확인 및 배포 (/wo K8S)
 
 1. Github repository에서 Actions 탭을 클릭합니다.
 2. 작업 진행 상황을 확인할 수 있습니다.
+3. 작업이 성공적으로 완료가 되면 Docker Image가 GHCR에 업로드 됩니다.
+4. 배포할 서버에서 Docker Image를 가져오고 실행합니다.
+    - `docker pull ghcr.io/mago-op/mago-op-whisper:latest`
+5. `docker-compose.yml` 파일이 있으면 실행합니다.
+    - `docker-compose up -d`
