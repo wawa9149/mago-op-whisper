@@ -7,6 +7,8 @@
 
 오렌지 플래릿 교육 프로그램 코드 w/ [Whisper](https://github.com/openai/whisper.git)
 
+![오렌지플래닛+마고](assets/orange-mago.png)
+
 ## 폴더 구조
 
 ```vim
@@ -57,6 +59,19 @@ cd egs/whisper
 ./scripts/run.sh test/test.wav
 ```
 
+### Python 실행
+
+```bash
+cd egs/whisper
+python local/transcribe.py \
+  --model-name turbo \
+  --nocuda \
+  --lang ko \
+  --out-dir exp/whisper \
+  --task transcribe \
+  test/test.flac
+```
+
 ## 배포
 
 Docker 이미지를 빌드하고 실행합니다.
@@ -75,4 +90,4 @@ docker compose up -d
 
 ### Test
 
-- [Service URL](http://localhost:9005/whisper/v1/run)
+- [Service URL](http://localhost:9005/whisper/docs)
