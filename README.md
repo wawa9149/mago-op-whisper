@@ -95,3 +95,7 @@ docker compose up -d
 실행 환경에 따라 변경해서 사용해 주세요. 아래 주소는 local 환경에서 실행한 경우 입니다.
 
 - [Service URL](http://localhost:9005/whisper/docs)
+
+## GitHub Actions
+
+👉 [GitHub Actions](docs/github_actions.md)
