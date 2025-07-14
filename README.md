@@ -1,4 +1,4 @@
-# mago-op-whispe-Nayoung
+# mago-op-whispe-Nayoung-test
 
 ![MAGO](https://img.shields.io/badge/MAGO-2025-green)
 ![OP](https://img.shields.io/badge/OP-2025-red)
